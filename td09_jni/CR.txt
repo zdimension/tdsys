@@ -1,0 +1,26 @@
+1.
+
+ça fonctionne
+
+2.
+
+oui, via System.in.read()
+
+3.
+
+oui
+
+4.
+
+idem
+
+5.
+
+idem
+
+6.
+
+j'ai juste mis la fonction fib et je l'ai appelée depuis la fonction JNI, si j'avais fait la récursion dans cette
+dernière j'aurais dû passer en plus de n, l'environnement et la classe ce qui aurait occupé de la place sur la pile
+pour rien
+

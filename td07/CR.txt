@@ -1,0 +1,80 @@
+NIGET Tom
+
+1.
+    1. L'invite est en attente tant que xeyes tourne
+    2. Le terminal est de nouveau disponible car xeyes a été suspendu (et est donc figé)
+    3. xeyes a été repris en arrière-plan (et n'est plus figé, mais ne bloque plus le terminal)
+    4. $ ps aux | grep xeyes
+       zdimens+  9562  0.2  0.0  19440  2532 tty5     S    09:55   0:00 xeyes
+    5. $ kill -SIGSTOP 9562
+       xeyes est de nouveau stoppé. SIGSTOP avait précédemment été émis via ^Z.
+    6. $ kill -18 9562
+    7. $ pkill xeyes
+       ou bien
+       $ killall xeyes
+       killall cherche des correspondances exactes tandis que pkill cherche un motif.
+
+2. cf code
+
+3. cf code
+
+4. Le programme sort du sleep quand il reçoit un signal. C'est indiqué par la doc de sleep qui précise qu'un signal
+   non ignoré causera le réveil du programme.
+
+5. Je ne constate pas le comportement ANSI sur ma machine / OS / compilateur.
+   Je ne peux pas non plus compiler sigaction.
+
+6. Quand on ignore, ^C tue le processus.
+
+   $ ./tst_ignore.exe
+   On ignore SIGINT
+   Test 1: début d'attente de 5 secondes : entrez des '^C' (SIGINT)
+           (pour terminer ce programme, entrez '^\')
+   ^C
+
+   Quand on masque, ^C est simplement affiché à l'écran.
+
+   On masque SIGINT
+   Test 2: début d'attente de 5 secondes : entrez des '^C' (SIGINT)
+           (pour terminer ce programme, entrez '^\')
+   ^C^C^C^C^C^C^C^C^C^C^C
+
+   Quand on démasque, retour au comportement normal, ^C tue le processus.
+
+   On démasque SIGINT
+
+   Test 3: début d'attente de 5 secondes : entrez des '^C' (SIGINT)
+           (pour terminer ce programme, entrez '^\')
+   ^C
+
+7. Parce la communication doit se faire via un signal préalablement filtré. Dans un système correct d'IPC, on peut
+   envoyer des données quelconques et laisser le destinataire les traiter. Ici, on ne peut envoyer que des signaux, et
+   il faut que le destinataire ait filtré le signal qu'on envoie, sinon au mieux il ne se passera rien et au pire ça
+   tuera le processus.
+
+   Ici, si on inverse cadet et aîné, il faut modifier le code pour changer les signaux qui sont envoyés.
+
+8. La transmission ne peut être que partielle car quand on filtre un signal pour lui associer une action, on ne fait que
+   stocker un pointeur vers une zone dans le segment de texte du programme, zone qui contient le code de la fonction.
+
+   En faisant exec, on remplace le contenu du segment en question, le pointeur n'a donc plus lieu d'être car le code
+   vers lequel il pointe n'existe plus. On ne peut donc pas transmettre ça d'un processus parent à un enfant.
+
+   J'ai lancé le programme dans un terminal puis fait ^C. Les deux processus partageant leurs flux d'ES (cf TDs
+   précédents) ils reçoivent le signal, mais seul le parent réagit car l'enfant ne filtre plus le signal (du fait de
+   exec) et a donc été tué. J'ai ensuite recommencé puis envoyé un SEGV aux deux processus, qui l'ont tous deux ignoré
+   (preuve que l'enfant conserve l'état "ignoré" du signal).
+
+   $ ./exo8.exe
+   PID parent = 10200
+   PID enfant = 10201
+   ^CSIGINT reçu, PID = 10200
+
+   $ ./exo8.exe
+   PID parent = 10200
+   PID enfant = 10201
+   <rien ne se passe>
+
+9. J'ai repris mon shell du TD3
+
+10. Redirige stdin vers un fichier non lisible et stdout+err vers nohup.out.

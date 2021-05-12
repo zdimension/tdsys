@@ -1,0 +1,22 @@
+total 168
+-rwxrwxrwx 1 zdimension zdimension   599 Mar 17 10:12 CR.txt
+-rwxrwxrwx 1 zdimension zdimension  2107 Mar 16 19:23 Makefile
+drwxrwxrwx 1 zdimension zdimension  4096 Mar 16 19:23 Win32NamedPipe
+-rwxrwxrwx 1 zdimension zdimension   258 Mar 16 20:00 ecrivain.c
+-rwxrwxrwx 1 zdimension zdimension 18376 Mar 16 20:00 ecrivain.exe
+-rwxrwxrwx 1 zdimension zdimension   468 Mar 16 19:31 foo
+-rwxrwxrwx 1 zdimension zdimension   248 Mar 16 20:00 lecteur.c
+-rwxrwxrwx 1 zdimension zdimension 18376 Mar 16 20:00 lecteur.exe
+-rwxrwxrwx 1 zdimension zdimension   680 Mar 17 10:39 popen.c
+-rwxrwxrwx 1 zdimension zdimension 20200 Mar 17 10:39 popen.exe
+-rwxrwxrwx 1 zdimension zdimension  1009 Mar 17 10:39 redir.c
+-rwxrwxrwx 1 zdimension zdimension 19976 Mar 17 10:11 redir.exe
+-rwxrwxrwx 1 zdimension zdimension   198 Mar 17 10:42 redir_simple.c
+-rwxrwxrwx 1 zdimension zdimension 19432 Mar 17 10:42 redir_simple.exe
+-rwxrwxrwx 1 zdimension zdimension   531 Mar 16 19:23 tst_redir.sh
+-rwxrwxrwx 1 zdimension zdimension   275 Mar 16 19:47 tube_anonyme1.c
+-rwxrwxrwx 1 zdimension zdimension 18456 Mar 16 19:47 tube_anonyme1.exe
+-rwxrwxrwx 1 zdimension zdimension   358 Mar 16 19:50 tube_anonyme2.c
+-rwxrwxrwx 1 zdimension zdimension 19872 Mar 16 19:49 tube_anonyme2.exe
+-rwxrwxrwx 1 zdimension zdimension   625 Mar 16 19:59 tube_anonyme_multi.c
+-rwxrwxrwx 1 zdimension zdimension 18720 Mar 17 10:20 tube_anonyme_multi.exe

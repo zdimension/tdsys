@@ -1,0 +1,6 @@
+1. sizeof(Data) = 100*1+4*1 = 104 octets.
+
+2. Il n'y a pas de trou de taille suffisante, cela déclenchera un nouvel appel à sbrk.
+
+3. Le premier trou a une taille de 48, si on retire l'en-tête cela laisse 32 octets utilisables.
+

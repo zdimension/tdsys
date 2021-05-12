@@ -1,0 +1,31 @@
+1.
+
+cf code
+
+2.
+
+j'ai utilisé freopen car c'est plus court qu'en utilisant les fonctions de fichiers POSIX
+
+3.
+
+rien à dire ici
+
+4.
+
+idem
+
+5.
+
+idem
+
+6.
+    1. un pipe a le code de type "p" (là où les fichiers normaux sont "-")
+    2. deux pipes
+    3. les deux se battent pour lire le contenu
+       par exemple, là je lis avec un buffer de 128 octets et j'ai envoyé une chaîne de plus de 128 caractères
+       le premier lecteur en a lu une partie, le deuxième a lu le reste
+       c'est assez logique, un tube n'est rien d'autre qu'une file
+
+7.
+
+rien à dire

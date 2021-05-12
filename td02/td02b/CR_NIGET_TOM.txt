@@ -1,0 +1,22 @@
+Ex 1
+néant
+
+Ex 2
+néant
+
+Ex 3
+le fichier DLL doit être présent (soit dans le dossier, soit quelque part dans le PATH)
+
+Ex 4
+néant
+
+Ex 5
+Sous Windows, il y a un système intégré au compilateur pour gérer l'exportation de fonctions dans une lib dynamique (dllexport).
+Dans les deux OS, dans le cas de linkage statique, il n'y bien sûr plus besoin d'avoir le fichier de la librairie pour lancer l'exécutable.
+Également, dans le cas de linkage dynamique, il faut que le fichier de la librairie soit présent pour lancer l'exécutable.
+Le système de chargement est très similaire (ouvrir librairie, récupérer pointeur de fonction, libérer librairie).
+Sur Windows, une fonction n'est par défaut pas exportée, sur Linux elle l'est.
+Pour qu'une fonction soit exportée sur Windows, il faut indiquer dllexport tandis que sur Linux, on peut indiquer qu'une fonction n'est pas exportée en la marquant static.
+
+Ex 6
+rien à dire de particulier, j'ai dû réécrire timer.h pour utiliser les fonctions de la winapi, et dans le main j'ai dû réécrire le code qui recherche les fichiers DLL

@@ -1,0 +1,63 @@
+0.
+
+Terminal :
+
+/mnt/d/Documents/td05$ ./fd_simple.exe / .
+File descripteurs:
+stdin = 0
+stdout = 1
+stderr =  2
+/ = 3
+. = 4
+
+CLion :
+
+/mnt/d/Documents/td05/fd_simple.exe / .
+File descripteurs:
+stdin = 0
+stdout = 1
+stderr =  2
+/ = 3
+. = 4
+
+J'en conclus déjà que CLion gère correctement le terminal pour qu'il n'y ait pas de différence de comportement.
+
+Ensuite, j'observe que les trois flux standards ont bien leurs numéros classiques, 0, 1 et 2.
+Les deux fichiers passés en paramètre sont ouverts dans l'ordre de passage et ont donc de manière cohérente
+des numéros qui se suivent.
+
+Si je décommente le fclose, les deux derniers ont le même descripteur ce qui est logique, fclose libère un descripteur
+qui peut donc être réutilisé par la suite.
+
+La présence de la ligne std* n'a aucun impact sur les numéros des descripteurs.
+
+1.
+
+cf code
+
+2.
+
+cf code
+nb j'ai directement fait un ls complet car le sujet ne précisait pas ce qui était attendu, donc je n'ai qu'un seul
+fichier pour l'ex 2 et l'ex 4
+
+3.
+
+Le fichier "sortie" contiendra :
+
+Parent avant fork
+Enfant
+Parent après fork
+Enfant
+
+"Enfant" est affiché deux fois ce qui met en évidence le partage des buffers d'IO.
+
+4.
+
+cf code également
+
+5.
+
+cf code
+
+j'ai utilisé les fonctions posix pour le parsing de paramètres pour éviter de devoir gérer ça moi même

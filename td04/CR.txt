@@ -1,0 +1,84 @@
+1.
+
+La durée de vie d'un thread est déterminée par la durée de vie du parent; un thread s'arrête quand le processus parent
+s'arrête même s'il n'a pas fini de travailler.
+
+En supprimant l'appel à pthread_join on voit que "Valeur renvoyée : XXX" est affiché directement (et donne donc une
+valeur erronée).
+
+exit() sert à arrêter le processus, tandis que pthread_exit() sert à arrêter le thread actif.
+
+2.
+
+cf programme
+
+3.
+
+cf programme
+
+4.
+
+non, au bout d'un moment la RAM sera pleine.
+
+5.
+
+/mnt/d/Documents/td04$ taskset -c 0 ./multiple_fork.exe 4000
+Time taken for creating 4000 processus (nanoseconds): 609375000
+Time taken for creating 4000 processus (milliseconds): 609
+
+/mnt/d/Documents/td04$ taskset -c 0 ./multiple_threads.exe 4000
+Time taken for creating 4000 threads (nanoseconds): 218750000
+Time taken for creating 4000 threads (milliseconds): 218
+
+On voit clairement que la création de thread est plus rapide que la création de processus.
+
+6.
+
+oui
+
+7.
+
+dès le premier lancement je constate des doublons dans l'affichage, dus au fait qu'un pointeur vers la même variable i
+est passé, donc quand la valeur de celle-ci est incrémentée dans la boucle, la valeur change pour tout le monde.
+
+En retirant le sleep, ça ne marche carrément plus du tout, tous les threads affichent 0 car ils démarrent tous en même
+temps.
+
+Pour corriger, j'ai créé une zone de stockage séparée qui permet à chaque thread de lire sa valeur depuis un endroit
+différent ce qui supprime la situation de compétition en lecture. Il n'y a plus de doublons.
+
+8.
+
+Si on retire le sleep, le programme utilise toutes les ressources disponibles pour faire le calcul le plus vite
+possible, donc logiquement ça utilise 100% du CPU.
+
+9.
+
+cf programme
+
+10.
+
+cf programme
+
+11.
+
+Je considère l'approche Win32 plus propre que celle de Linux (comme pour à peu près tout), mais l'approche POSIX permet
+de faire du code plus court (mais moins lisible au premier abord).
+C'est cohérent avec la vision du monde de Linux pour qui les threads sont une variation "légère" des processus, là où
+sur NT les processus ne sont que des conteneurs de threads.
+L'approche Win32 est également plus intuitive, car on crée réellement un processus tel qu'on le souhaite, à l'inverse de
+Posix où on duplique le processus actuel pour ensuite le "remplacer" (via exec) par un autre programme.
+
+Concernant les threads, les deux approches sont presqu'identiques, les seules différences résident dans la nature de
+certains paramètres et le nom des fonctions de l'API, mais les deux systèmes fonctionnent de manière très similaire :
+Posix (pthread_*) | Windows
+create            | CreateThread
+join              | WaitFor[Single/Multiple]Object
+t                 | HANDLE
+self              | GetCurrentThreadId
+On ne peut pas faire un tel tableau d'équivalences pour les processus car le fonctionnement est entièrement différent.
+(à moins bien sûr de prendre en compte l'existence de posix_spawn qui est un équivalent direct à CreateProcess)
+(à moins bien sûr de prendre en compte l'existence de ZwCreateProcess qui est un équivalent direct à fork)
+
+Il est toutefois à noter que NT gère nativement les threads tandis que Linux les gère comme une rustine ajoutée a
+posteriori pour se conformer à la norme POSIX.

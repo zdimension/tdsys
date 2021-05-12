@@ -1,0 +1,115 @@
+﻿Exercice 1
+Le fichier sort.h définit la signature de la fonction sort, dont plusieurs implémentations sont fournies (bubble, insertion, merge, quick).
+Le fichier timer.h fournit les fonctions timer_start et timer_end.
+Dans l’ensemble, le programme attend en ligne de commande un entier qui détermine la taille d’un tableau de nombres entre 0 et 999 tirés au hasard. Ce dernier va ensuite être trié puis affiché, suivi de messages contenant entre autres le temps mis pour l’exécution si le mode verbeux est activé.
+
+
+Exercice 2
+Il utilise les bibliothèques linux-vdso, libc, et bien sûr la librarie du linker dynamique ld-linux-x86-64.
+
+
+Exercice 3:
+$(CC) --static -o $@ $^
+Les tests passent.
+LDD n’affiche rien et indique qu’il ne s’agit pas d’un exécutable dynamique.
+Le programme dynamique fait 25 Kio tandis que le statique en fait 865. Logique, vu que le deuxième contient toutes les librairies dont il a besoin directement dans le fichier, tandis que le premier les charges à la volée au lancement.
+
+
+Exercice 4
+ar -r $@ $^
+Les tests passent.
+Le programme utilisant la librairie statique ne fait plus que 24 Kio.
+   text    data     bss     dec     hex filename
+   5157     684      12    5853    16dd tri_bubble-basicExe.exe
+ 766596   20964    6080  793640   c1c28 tri_bubble-staticExe.exe
+   4709     684      12    5405    151d tri_bubble-staticLib.exe
+
+$ nm tri_bubble-basicExe.exe | grep "foo\|bar"
+000000000000199f T bar
+000000000000199f t bar.localalias
+000000000000194b T foo
+
+
+$ nm tri_bubble-staticLib.exe | grep "foo\|bar"
+(rien)
+
+
+Exercice 5
+$(CC) -shared -o $@ $^
+
+
+Exercice 6
+Les tests passent après un export LD_LIBRARY_PATH=”.”
+
+
+Exercice 7
+main_dynload.c :
+#include "load_library.h"
+...
+case 'l':
+    load_library(argv[++i]);
+    break;
+
+
+
+
+load_library.c:
+#include <dlfcn.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+
+static void* libptr;
+static void (* funcptr)(int[], int);
+
+
+void load_library(char* library_name)
+{
+    if (!(libptr = dlopen(library_name, RTLD_LAZY)) || !(funcptr = dlsym(libptr, "sort")))
+    {
+        fprintf(stderr, "Unable to load sort library: %s\n", dlerror());
+        exit(1);
+    }
+
+
+}
+
+
+void sort(int list[], int size)
+{
+    funcptr(list, size);
+}
+
+
+J’ai dû remplacer la règle de compilation de tri.exe par :
+gcc -rdynamic -o tri.exe $^ -ldl
+Car la règle fournie dans l’énoncé n’incluait pas timer.o, et j’obtenais donc une erreur de référence indéfinie à l’exécution pour les fonctions timer_*
+tri.exe fait 26 Kio, soit un petit peu plus que le programme dynamique initial. Cela peut s’expliquer par l’overhead induit par l’utilisation des fonctions de chargement dynamique. L’effet serait je pense compensé si la librairie chargée ici était plus grande.
+
+LDD indique l’utilisation de linux-vdso, libc ainsi que libdl (librairie qui effectue le chargement dynamique).
+
+PROGS=$(BASIC_EXE) $(STATIC_EXE) $(STATIC_LIB) $(DYNAMIC_LIB)
+all: $(PROGS) $(DYNAMIC_LOAD)
+test: all
+    ...
+    @for sortLib in *.so; do \
+        echo "Lancement avec la librairie: $$sortLib" ;\
+        ./$(DYNAMIC_LOAD) -l ./$$sortLib -v -s 10; \
+        echo ;\
+    done
+
+
+
+
+Exercice 8
+Je créerais le fichier shell.c, je le compilerais en librairie dynamique puis je lancerais tri.exe avec le fichier .so en paramètre. C’est là tout l’intérêt du chargement dynamique de librairie.
+
+
+Exercice 9
+Voir code
+
+
+Exercice 10
+python3 utilise linux-vdso, libc, libpthread, libdl, libutil, libm, libexpat et libz.
+java utilise linux-vdso, libz, libpthread, libjli, libdl et libc.
+Cohérent dans la mesure où ce sont des interpréteurs (±) de langages de programmation et qu’il est donc normal qu’ils aient besoin, par exemple, d’utiliser des threads ou du chargement dynamique.

@@ -1,0 +1,91 @@
+1.
+
+$ ./multiple_fork.exe | wc -l
+100
+
+2.
+
+$ time ./multiple_fork.exe
+
+[...]
+
+real    0m10.022s
+user    0m0.000s
+sys     0m0.016s
+
+$ ps aux | grep multiple_fork
+zdimens+  1637  1.0  0.0  10404   460 tty2     S    10:59   0:00 ./multiple_fork.exe
+zdimens+  1638  0.0  0.0  10536   372 tty2     S    10:59   0:00 ./multiple_fork.exe
+zdimens+  1639  0.0  0.0  10536   372 tty2     S    10:59   0:00 ./multiple_fork.exe
+zdimens+  1640  0.0  0.0  10536   372 tty2     S    10:59   0:00 ./multiple_fork.exe
+zdimens+  1641  0.0  0.0  10536   372 tty2     S    10:59   0:00 ./multiple_fork.exe
+zdimens+  1642  0.0  0.0  10536   372 tty2     S    10:59   0:00 ./multiple_fork.exe
+zdimens+  1643  0.0  0.0  10536   372 tty2     S    10:59   0:00 ./multiple_fork.exe
+zdimens+  1644  0.0  0.0  10536   372 tty2     S    10:59   0:00 ./multiple_fork.exe
+zdimens+  1645  0.0  0.0  10536   372 tty2     S    10:59   0:00 ./multiple_fork.exe
+zdimens+  1646  0.0  0.0  10536   372 tty2     S    10:59   0:00 ./multiple_fork.exe
+zdimens+  1647  0.0  0.0  10536   372 tty2     S    10:59   0:00 ./multiple_fork.exe
+
+Les enfants ont des PID séquentiels, car ils ont tous été créés en même temps.
+
+3.
+
+$ ps aux | grep zombie
+zdimens+  5217  0.2  0.0  10404   464 tty2     S    11:15   0:00 ./zombie.exe
+zdimens+  5218  0.0  0.0      0     0 tty2     Z    11:15   0:00 [zombie.exe] <defunct>
+zdimens+  5219  0.0  0.0      0     0 tty2     Z    11:15   0:00 [zombie.exe] <defunct>
+zdimens+  5220  0.0  0.0      0     0 tty2     Z    11:15   0:00 [zombie.exe] <defunct>
+zdimens+  5221  0.0  0.0      0     0 tty2     Z    11:15   0:00 [zombie.exe] <defunct>
+zdimens+  5222  0.0  0.0      0     0 tty2     Z    11:15   0:00 [zombie.exe] <defunct>
+zdimens+  5223  0.3  0.0      0     0 tty2     Z    11:15   0:00 [zombie.exe] <defunct>
+zdimens+  5224  0.3  0.0      0     0 tty2     Z    11:15   0:00 [zombie.exe] <defunct>
+zdimens+  5225  0.0  0.0      0     0 tty2     Z    11:15   0:00 [zombie.exe] <defunct>
+zdimens+  5226  0.0  0.0      0     0 tty2     Z    11:15   0:00 [zombie.exe] <defunct>
+zdimens+  5227  0.0  0.0      0     0 tty2     Z    11:15   0:00 [zombie.exe] <defunct>
+
+4.
+
+Le processus parent n'est plus présent car il est terminé.
+
+$ ps aux | grep orphelin
+zdimens+  5312  0.0  0.0  10536   372 tty2     S    11:18   0:00 ./orphelin.exe
+zdimens+  5313  0.0  0.0  10536   372 tty2     S    11:18   0:00 ./orphelin.exe
+zdimens+  5314  0.0  0.0  10536   372 tty2     S    11:18   0:00 ./orphelin.exe
+zdimens+  5315  0.0  0.0  10536   372 tty2     S    11:18   0:00 ./orphelin.exe
+zdimens+  5316  0.0  0.0  10536   372 tty2     S    11:18   0:00 ./orphelin.exe
+zdimens+  5317  0.5  0.0  10536   372 tty2     S    11:18   0:00 ./orphelin.exe
+zdimens+  5318  0.0  0.0  10536   372 tty2     S    11:18   0:00 ./orphelin.exe
+zdimens+  5319  0.0  0.0  10536   372 tty2     S    11:18   0:00 ./orphelin.exe
+zdimens+  5320  0.0  0.0  10536   372 tty2     S    11:18   0:00 ./orphelin.exe
+zdimens+  5321  0.0  0.0  10536   372 tty2     S    11:18   0:00 ./orphelin.exe
+
+On voit qu'il a été adopté par init.
+
+$ pstree
+init─┬─2*[init───bash]
+     ├─init───bash───pstree
+     ├─10*[orphelin.exe]
+     ├─sshd───sshd───sshd
+     └─{init}
+     
+5.
+
+Cf programme
+
+6.
+
+Cf programme
+
+7.
+
+Cela ne fonctionne pas car les processus enfants ont leur propre copie de l'environnement et donc le changement de répertoire de travail n'affecte pas les enfants suivants.
+
+8.
+
+Cf programme
+
+9.
+
+J'ai fait en sorte que my_system prenne un tableau de chaînes plutôt qu'une chaîne, comme ça je n'ai pas à refaire le parsing déjà effectué côté shell.
+
+Avec system, ^C interrompt la commande tandis qu'avec my_system (qui utilise execvp), ^C interrompt le shell.

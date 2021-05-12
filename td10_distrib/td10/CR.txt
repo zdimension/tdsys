@@ -1,0 +1,22 @@
+partie 4
+La différence est qu'avec l'API de la JNI on lance sur le processus actuel et on reprend le contrôle après
+Tandis qu'avec exec, ça écrase notre processus donc si on veut pouvoir reprendre le contrôle il faut faire fork au
+préalable
+exec est plus rapide à écrire, mais avec la JNI on a un peu plus de contrôle sur ce qu'on fait
+
+exo 7
+Tout programme bien sécurisé se doit de recevoir les mots de passe en clair via stdin.
+Ainsi, on pourrait imaginer un cheval de troie se faisant passer pour la JVM, et qui au lancement intercepterait le flux
+d'entrée standard et redirigerait ensuite le contenu au vrai programme, mais en ayant au passage enregistré quelque part
+le texte saisi, à la manière d'un keylogger.
+On peut faire ça côté C via l'API des flux système, ou bien côté Java, en manipulant System.in via la JNI.
+On pourrait même réécrire la fonction Scanner.nextLine avec RedefineClasses.
+
+exo 8
+cf myjvm.cpp et ProgClef.java
+myjvm se comporte comme l'exécutable Java standard, mais refusera de lancer un programme ne contenant pas un champ
+statique MOT_DE_PASSE contenant la valeur "systeme", et en retour, le programme refusera de se lancer si lors de
+l'entrée dans le Main, ce champ ne contient pas la valeur "polytech".
+Chaque programme ne contient qu'un hash de la valeur attendue, ce qui complique un potentiel contournement.
+Bien entendu, on est en Java, n'importe qui peut modifier le bytecode pour sauter le if de vérification, et pour la VM
+c'est plus compliqué mais possible aussi.
